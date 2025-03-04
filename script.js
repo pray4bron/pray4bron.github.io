@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Fetch current prayer count
     async function fetchPrayerCount() {
         try {
-            const response = await fetch("https://your-backend-url.com/prayers");
+            const response = await fetch("https://pray4bron.github.io/");
             const data = await response.json();
             prayerCount.textContent = data.count;
         } catch (error) {
