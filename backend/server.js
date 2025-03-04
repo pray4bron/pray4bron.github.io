@@ -1,7 +1,6 @@
 require("dotenv").config();
    const express = require("express");
    const cors = require("cors");
-   const { Pool } = require("pg");
 
    const app = express();
    const port = process.env.PORT || 5000;
@@ -9,30 +8,26 @@ require("dotenv").config();
    app.use(cors());
    app.use(express.json());
 
-   // Database connection
-   const pool = new Pool({
-     connectionString: process.env.DATABASE_URL,
-     ssl: { rejectUnauthorized: false },
-   });
+   let prayerCount = 0;
+   const userClicks = new Map(); // Store user IPs and last click date
 
    // Get current prayer count
-   app.get("/prayers", async (req, res) => {
-     try {
-       const result = await pool.query("SELECT count FROM prayers WHERE id = 1");
-       res.json({ count: result.rows[0]?.count || 0 });
-     } catch (err) {
-       res.status(500).json({ error: "Database error" });
-     }
+   app.get("/prayers", (req, res) => {
+     res.json({ count: prayerCount });
    });
 
-   // Add a prayer
-   app.post("/pray", async (req, res) => {
-     try {
-       await pool.query("UPDATE prayers SET count = count + 1 WHERE id = 1");
-       res.json({ message: "Prayer added" });
-     } catch (err) {
-       res.status(500).json({ error: "Database error" });
+   // Add a prayer (once per day per IP)
+   app.post("/pray", (req, res) => {
+     const userIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+     const today = new Date().toDateString();
+
+     if (userClicks.get(userIp) === today) {
+       return res.status(403).json({ error: "You can only pray once per day." });
      }
+
+     userClicks.set(userIp, today);
+     prayerCount++;
+     res.json({ count: prayerCount });
    });
 
    app.listen(port, () => {
