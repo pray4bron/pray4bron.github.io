@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const prayButton = document.getElementById("pray-button");
     const message = document.getElementById("message");
 
-    // Load stored prayer count from local storage
-    let count = localStorage.getItem("prayerCount") || 0;
+    // Load stored prayer count from local storage (default to 0 if not set)
+    let count = parseInt(localStorage.getItem("prayerCount")) || 0;
     prayerCount.textContent = count;
 
     // Check if user has already prayed today
@@ -19,13 +19,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Handle button click
     prayButton.addEventListener("click", () => {
-        if (localStorage.getItem("lastPrayDate") === today) {
+        const lastPrayDate = localStorage.getItem("lastPrayDate");
+        const today = new Date().toDateString();
+
+        if (lastPrayDate === today) {
             message.textContent = "You can only pray once per day!";
             message.style.color = "red";
             return;
         }
 
-        // Update count and store in local storage
+        // Increment prayer count
         count++;
         localStorage.setItem("prayerCount", count);
         localStorage.setItem("lastPrayDate", today);
