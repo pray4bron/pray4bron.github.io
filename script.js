@@ -37,6 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Play prayer sound
         prayerSound.play();
 
+        // Spray confetti
+        const confettiSettings = { particleCount: 100, spread: 70, origin: { y: 0.6 } };
+        confetti(confettiSettings);
+
         // Increment prayer count
         count++;
         localStorage.setItem("prayerCount", count);
