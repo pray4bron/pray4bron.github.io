@@ -21,15 +21,31 @@ h1 {
 }
 
 button {
-    background-color: #ffcc00;
-    border: none;
-    padding: 10px 20px;
     font-size: 18px;
-    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border: none;
     border-radius: 5px;
-    color: #000; /* Dark text on button */
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
 }
 
-button:hover {
-    background-color: #ffaa00;
+button:enabled {
+    background-color: green;
+    color: white;
+}
+
+button:enabled:hover {
+    background-color: limegreen; /* Brighter green on hover */
+    transform: scale(1.05); /* Slightly enlarges button on hover */
+}
+
+button:disabled {
+    background-color: red;
+    color: white;
+}
+
+button:disabled:hover {
+    background-color: darkred; /* Slightly darker red on hover when disabled */
 }
