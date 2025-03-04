@@ -13,8 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (lastPrayDate === today) {
         prayButton.disabled = true;
+        prayButton.style.backgroundColor = "red";
         message.textContent = "You have already prayed today. Come back tomorrow!";
         message.style.color = "red";
+    } else {
+        prayButton.style.backgroundColor = "green";
     }
 
     // Handle button click
@@ -38,5 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
         message.textContent = "Thank you for your prayer! Come back tomorrow.";
         message.style.color = "green";
         prayButton.disabled = true;
+        prayButton.style.backgroundColor = "red";
     });
 });
