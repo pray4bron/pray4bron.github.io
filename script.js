@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } catch (error) {
             console.error("Error sending prayer:", error);
-        }
+        } // ✅ Catch block properly added
     }
 
     prayerButton.addEventListener("click", sendPrayer);
