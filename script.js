@@ -2,14 +2,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const prayerCountElement = document.getElementById("prayerCount");
     const prayerButton = document.getElementById("prayButton");
 
-    const backendURL = "https://lebron-prayer-api.onrender.com"; // ✅ Your backend URL
+    const backendURL = "https://lebron-prayer-api.onrender.com"; // ✅ Correct backend URL
 
-    // ✅ Check if user has already prayed today
-    const hasPrayedToday = localStorage.getItem("hasPrayedToday");
-    if (hasPrayedToday) {
-        prayerButton.disabled = true; // Disable button if already prayed
-        prayerButton.textContent = "You've already prayed today 🙏";
-        prayerButton.style.backgroundColor = "red"; // Make button red
+    // ✅ Function to check if user has already prayed today
+    function hasPrayedToday() {
+        const lastPrayedDate = localStorage.getItem("lastPrayedDate");
+        const today = new Date().toISOString().split("T")[0]; // Format YYYY-MM-DD
+        return lastPrayedDate === today;
+    }
+
+    // ✅ Function to disable the button if already prayed
+    function updateButtonState() {
+        if (hasPrayedToday()) {
+            prayerButton.disabled = true;
+            prayerButton.textContent = "You've already prayed today 🙏";
+            prayerButton.style.backgroundColor = "red"; // Make it red
+        }
     }
 
     // ✅ Fetch the current prayer count from the backend
@@ -17,17 +25,15 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const response = await fetch(`${backendURL}/prayers`);
             const data = await response.json();
-            prayerCountElement.textContent = `Prayers: ${data.count}`; // ✅ Fix: No double text
+            prayerCountElement.textContent = `Prayers: ${data.count}`; // ✅ Fix double text
         } catch (error) {
             console.error("Error fetching prayer count:", error);
         }
     }
 
-    // ✅ Function to send a prayer request (only if allowed)
+    // ✅ Function to send a prayer request
     async function sendPrayer() {
-        if (localStorage.getItem("hasPrayedToday")) {
-            return; // Stop function if the user already prayed
-        }
+        if (hasPrayedToday()) return; // Stop if already prayed today
 
         try {
             const response = await fetch(`${backendURL}/pray`, {
@@ -41,11 +47,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await response.json();
                 prayerCountElement.textContent = `Prayers: ${data.count}`; // ✅ Update count
 
-                // ✅ Mark that the user has prayed today
-                localStorage.setItem("hasPrayedToday", true);
-                prayerButton.disabled = true;
-                prayerButton.textContent = "You've already prayed today 🙏";
-                prayerButton.style.backgroundColor = "red"; // Make button red
+                // ✅ Store today's date in localStorage
+                const today = new Date().toISOString().split("T")[0];
+                localStorage.setItem("lastPrayedDate", today);
+
+                // ✅ Update button state
+                updateButtonState();
             } else {
                 console.error("Failed to send prayer");
             }
@@ -59,4 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ Fetch count when page loads
     fetchPrayerCount();
+
+    // ✅ Update button state when page loads
+    updateButtonState();
 });
