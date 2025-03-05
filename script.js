@@ -2,15 +2,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const prayerCountElement = document.getElementById("prayerCount");
     const prayerButton = document.getElementById("prayButton");
 
+    const backendURL = "https://your-backend.onrender.com"; // ⬅️ Replace this with your actual backend URL
+
     if (!prayerCountElement || !prayerButton) {
         console.error("Prayer count element or button not found!");
         return;
     }
 
-    // Fetch the current prayer count from the backend
+    // ✅ Fetch the current prayer count from the backend
     async function fetchPrayerCount() {
         try {
-            const response = await fetch("https://your-backend.onrender.com/prayers");
+            const response = await fetch(`${backendURL}/prayers`);
             const data = await response.json();
             prayerCountElement.textContent = `Prayers: ${data.count}`;
         } catch (error) {
@@ -18,11 +20,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Function to send a prayer request
+    // ✅ Function to send a prayer request
     async function sendPrayer() {
         try {
-            const response = await fetch("https://your-backend.onrender.com/pray", {
+            const response = await fetch(`${backendURL}/pray`, {
                 method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }
             });
 
             if (response.ok) {
@@ -36,9 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Attach event listener AFTER ensuring elements exist
+    // ✅ Attach event listener to the button
     prayerButton.addEventListener("click", sendPrayer);
 
-    // Fetch count when page loads
+    // ✅ Fetch count when page loads
     fetchPrayerCount();
 });
