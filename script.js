@@ -1,37 +1,44 @@
-const prayerCountElement = document.getElementById("prayerCount");
-const prayerButton = document.getElementById("prayButton");
+document.addEventListener("DOMContentLoaded", function () {
+    const prayerCountElement = document.getElementById("prayerCount");
+    const prayerButton = document.getElementById("prayButton");
 
-// Function to fetch the latest prayer count from the backend
-async function fetchPrayerCount() {
-    try {
-        const response = await fetch("https://your-backend.onrender.com/prayers");
-        const data = await response.json();
-        prayerCountElement.textContent = `Prayers: ${data.count}`;
-    } catch (error) {
-        console.error("Error fetching prayer count:", error);
+    if (!prayerCountElement || !prayerButton) {
+        console.error("Prayer count element or button not found!");
+        return;
     }
-}
 
-// Function to send a prayer and increase the count
-async function sendPrayer() {
-    try {
-        const response = await fetch("https://your-backend.onrender.com/pray", {
-            method: "POST",
-        });
-
-        if (response.ok) {
+    // Fetch the current prayer count from the backend
+    async function fetchPrayerCount() {
+        try {
+            const response = await fetch("https://your-backend.onrender.com/prayers");
             const data = await response.json();
             prayerCountElement.textContent = `Prayers: ${data.count}`;
-        } else {
-            console.error("Failed to send prayer");
+        } catch (error) {
+            console.error("Error fetching prayer count:", error);
         }
-    } catch (error) {
-        console.error("Error sending prayer:", error);
     }
-}
 
-// Event listener for the prayer button
-prayerButton.addEventListener("click", sendPrayer);
+    // Function to send a prayer request
+    async function sendPrayer() {
+        try {
+            const response = await fetch("https://your-backend.onrender.com/pray", {
+                method: "POST",
+            });
 
-// Fetch prayer count when the page loads
-fetchPrayerCount();
+            if (response.ok) {
+                const data = await response.json();
+                prayerCountElement.textContent = `Prayers: ${data.count}`;
+            } else {
+                console.error("Failed to send prayer");
+            }
+        } catch (error) {
+            console.error("Error sending prayer:", error);
+        }
+    }
+
+    // Attach event listener AFTER ensuring elements exist
+    prayerButton.addEventListener("click", sendPrayer);
+
+    // Fetch count when page loads
+    fetchPrayerCount();
+});
