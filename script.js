@@ -2,40 +2,40 @@ document.addEventListener("DOMContentLoaded", function () {
     const prayerCountElement = document.getElementById("prayerCount");
     const prayerButton = document.getElementById("prayButton");
 
-    const backendURL = "https://lebron-prayer-api.onrender.com"; // ✅ Backend URL
-    const prayerSound = new Audio("prayer-sound.mp3"); // ✅ Sound file
+    const backendURL = "https://lebron-prayer-api.onrender.com"; 
+    const prayerSound = new Audio("prayer-sound.mp3"); 
 
-    // ✅ Function to get today's date in YYYY-MM-DD format
+    
     function getTodayDate() {
         return new Date().toISOString().split("T")[0];
     }
 
-    // ✅ Function to check if the user has already prayed today
+    
     function hasPrayedToday() {
         return localStorage.getItem("lastPrayedDate") === getTodayDate();
     }
 
-    // ✅ Function to disable the button if the user has already prayed
+    
     function updateButtonState() {
         if (hasPrayedToday()) {
             prayerButton.disabled = true;
-            prayerButton.textContent = "Come back tomorrow! 🙏"; // ✅ Corrected text
-            prayerButton.style.backgroundColor = "red"; // Button turns red
+            prayerButton.textContent = "Come back tomorrow! 🙏"; 
+            prayerButton.style.backgroundColor = "red"; 
         } else {
             prayerButton.disabled = false;
             prayerButton.textContent = "Pray for LeBron 🙌";
-            prayerButton.style.backgroundColor = "green"; // Button is green
+            prayerButton.style.backgroundColor = "green"; 
         }
     }
 
 
-    // ✅ Function to trigger confetti
+    
     function launchConfetti() {
         const confettiSettings = { particleCount: 100, spread: 60, origin: { y: 0.6 } };
         confetti(confettiSettings);
     }
 
-    // ✅ Fetch the current prayer count from the backend
+    
     async function fetchPrayerCount() {
         try {
             const response = await fetch(`${backendURL}/prayers`);
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ✅ Function to send a prayer request
+    
     async function sendPrayer() {
         if (hasPrayedToday()) {
             console.log("Prayer already sent today.");
@@ -60,17 +60,22 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (response.ok) {
-                const data = await response.json();
-                prayerCountElement.textContent = `Prayers: ${data.count}`;
+        const data = await response.json();
+        prayerCountElement.textContent = `Prayers: ${data.count}`;
 
-                // ✅ Store today's date in localStorage
-                localStorage.setItem("lastPrayedDate", getTodayDate());
+    
+        localStorage.setItem("lastPrayedDate", getTodayDate());
 
-                // ✅ Play sound & launch confetti
-                prayerSound.play();
-                launchConfetti();
+    
+        prayerSound.play();
+        launchConfetti();
 
-                updateButtonState();
+    
+        prayerButton.disabled = true;
+        prayerButton.textContent = "Come back tomorrow! 🙏"; 
+        prayerButton.style.backgroundColor = "red";
+}
+
             } else {
                 console.error("Failed to send prayer");
             }
@@ -79,10 +84,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // ✅ Attach event listener
+    
     prayerButton.addEventListener("click", sendPrayer);
 
-    // ✅ Initialize on page load
+    
     fetchPrayerCount();
     updateButtonState();
 });
