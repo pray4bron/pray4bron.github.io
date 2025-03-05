@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateButtonState() {
         if (hasPrayedToday()) {
             prayerButton.disabled = true;
-            prayerButton.textContent = "You've already prayed today 🙏";
+            prayerButton.textContent = "Come back tomorrow! 🙏"; // ✅ Corrected text
             prayerButton.style.backgroundColor = "red"; // Button turns red
         } else {
             prayerButton.disabled = false;
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
             prayerButton.style.backgroundColor = "green"; // Button is green
         }
     }
+
 
     // ✅ Function to trigger confetti
     function launchConfetti() {
