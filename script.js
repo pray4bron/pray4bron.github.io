@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const prayerButton = document.getElementById("prayButton");
 
     const backendURL = "https://lebron-prayer-api.onrender.com"; // ✅ Backend URL
+    const prayerSound = new Audio("prayer-sound.mp3"); // ✅ Sound file
 
     // ✅ Function to get today's date in YYYY-MM-DD format
     function getTodayDate() {
@@ -11,10 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ Function to check if the user has already prayed today
     function hasPrayedToday() {
-        const lastPrayedDate = localStorage.getItem("lastPrayedDate");
-        console.log("Stored lastPrayedDate:", lastPrayedDate); // ✅ Debugging
-        console.log("Today's date:", getTodayDate()); // ✅ Debugging
-        return lastPrayedDate === getTodayDate();
+        return localStorage.getItem("lastPrayedDate") === getTodayDate();
     }
 
     // ✅ Function to disable the button if the user has already prayed
@@ -22,12 +20,18 @@ document.addEventListener("DOMContentLoaded", function () {
         if (hasPrayedToday()) {
             prayerButton.disabled = true;
             prayerButton.textContent = "You've already prayed today 🙏";
-            prayerButton.style.backgroundColor = "red"; // Make it red
+            prayerButton.style.backgroundColor = "red"; // Button turns red
         } else {
             prayerButton.disabled = false;
             prayerButton.textContent = "Pray for LeBron 🙌";
-            prayerButton.style.backgroundColor = "green"; // Make it green
+            prayerButton.style.backgroundColor = "green"; // Button is green
         }
+    }
+
+    // ✅ Function to trigger confetti
+    function launchConfetti() {
+        const confettiSettings = { particleCount: 100, spread: 60, origin: { y: 0.6 } };
+        confetti(confettiSettings);
     }
 
     // ✅ Fetch the current prayer count from the backend
@@ -60,7 +64,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // ✅ Store today's date in localStorage
                 localStorage.setItem("lastPrayedDate", getTodayDate());
-                console.log("Saved lastPrayedDate:", getTodayDate()); // ✅ Debugging
+
+                // ✅ Play sound & launch confetti
+                prayerSound.play();
+                launchConfetti();
 
                 updateButtonState();
             } else {
