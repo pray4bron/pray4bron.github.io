@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const prayerCountElement = document.getElementById("prayerCount");
     const prayerButton = document.getElementById("prayButton");
 
-    const backendURL = "https://your-backend.onrender.com"; // ⬅️ Replace this with your actual backend URL
+    const backendURL = "https://lebron-prayer-api.onrender.com"; // ⬅️ Replace this with your actual backend URL
 
     if (!prayerCountElement || !prayerButton) {
         console.error("Prayer count element or button not found!");
