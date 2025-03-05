@@ -9,24 +9,22 @@ document.addEventListener("DOMContentLoaded", function () {
         return new Date().toISOString().split("T")[0];
     }
 
-    // ✅ Function to check if the user has already prayed today
+    // ✅ Function to check if the user has already prayed today (stored locally)
     function hasPrayedToday() {
         const lastPrayedDate = localStorage.getItem("lastPrayedDate");
-        console.log("Last prayed date:", lastPrayedDate); // 🔍 Debugging
-        const today = getTodayDate();
-        console.log("Today's date:", today); // 🔍 Debugging
-        return lastPrayedDate === today;
+        return lastPrayedDate === getTodayDate();
     }
 
     // ✅ Function to disable the button if the user has already prayed
     function updateButtonState() {
         if (hasPrayedToday()) {
-            console.log("User has already prayed today. Disabling button."); // 🔍 Debugging
             prayerButton.disabled = true;
             prayerButton.textContent = "You've already prayed today 🙏";
             prayerButton.style.backgroundColor = "red"; // Make it red
         } else {
-            console.log("User has NOT prayed today. Button is enabled."); // 🔍 Debugging
+            prayerButton.disabled = false;
+            prayerButton.textContent = "Pray for LeBron 🙌";
+            prayerButton.style.backgroundColor = "green"; // Make it green
         }
     }
 
@@ -35,39 +33,32 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const response = await fetch(`${backendURL}/prayers`);
             const data = await response.json();
-            console.log("Fetched prayer count:", data.count); // 🔍 Debugging
             prayerCountElement.textContent = `Prayers: ${data.count}`; // ✅ Fix double text
         } catch (error) {
             console.error("Error fetching prayer count:", error);
         }
     }
 
-    // ✅ Function to send a prayer request
+    // ✅ Function to send a prayer request (only if they haven't prayed today)
     async function sendPrayer() {
         if (hasPrayedToday()) {
-            console.log("User tried to pray again, but they have already prayed today."); // 🔍 Debugging
-            return; // Stop if already prayed today
+            return; // ❌ Stop if already prayed today
         }
 
         try {
             const response = await fetch(`${backendURL}/pray`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                }
+                headers: { "Content-Type": "application/json" }
             });
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("Prayer sent successfully. New count:", data.count); // 🔍 Debugging
-                prayerCountElement.textContent = `Prayers: ${data.count}`;
+                prayerCountElement.textContent = `Prayers: ${data.count}`; // ✅ Update counter
 
-                // ✅ Store today's date in localStorage
-                const today = getTodayDate();
-                localStorage.setItem("lastPrayedDate", today);
-                console.log("Stored new prayer date in localStorage:", today); // 🔍 Debugging
+                // ✅ Store today's date in localStorage to prevent multiple prayers
+                localStorage.setItem("lastPrayedDate", getTodayDate());
 
-                // ✅ Update button state
+                // ✅ Disable button after prayer
                 updateButtonState();
             } else {
                 console.error("Failed to send prayer");
@@ -80,9 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // ✅ Attach event listener to the button
     prayerButton.addEventListener("click", sendPrayer);
 
-    // ✅ Fetch count when page loads
+    // ✅ Initial setup when page loads
     fetchPrayerCount();
-
-    // ✅ Update button state when page loads
     updateButtonState();
 });
